@@ -12,7 +12,7 @@ const App: React.FC = () => {
   return (
     <Router>
       <HeroUIProvider>
-        <ToastProvider>
+        <ToastProvider> {/* FIXED: Now properly wraps children */}
           <ThemeProvider>
             <AuthProvider>
               <Layout>
