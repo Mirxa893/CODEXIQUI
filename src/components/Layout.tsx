@@ -1,6 +1,16 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Button, Navbar, NavbarBrand, NavbarContent, NavbarItem, Drawer, DrawerContent, DrawerHeader, DrawerBody } from '@heroui/react';
+import {
+  Button,
+  Navbar,
+  NavbarBrand,
+  NavbarContent,
+  NavbarItem,
+  Sheet, // <-- use Sheet instead of Drawer
+  SheetContent,
+  SheetHeader,
+  SheetBody,
+} from '@heroui/react';
 import { Icon } from '@iconify/react';
 import Sidebar from './Sidebar';
 import ThemeToggle from './ThemeToggle';
@@ -19,25 +29,26 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   return (
     <div className="flex h-screen bg-background text-foreground">
-      <Drawer open={isSidebarOpen} onClose={() => setIsSidebarOpen(false)}>
-        <DrawerContent>
-          <DrawerHeader>
+      {/* ✅ Replace Drawer with Sheet for compatibility */}
+      <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
+        <SheetContent side="left" className="w-64">
+          <SheetHeader>
             <h2 className="text-lg font-semibold">Menu</h2>
-          </DrawerHeader>
-          <DrawerBody>
+          </SheetHeader>
+          <SheetBody className="space-y-4 mt-4">
             <Sidebar />
             <DownloadButton chatHistory={chatHistory} />
-          </DrawerBody>
-        </DrawerContent>
-      </Drawer>
+          </SheetBody>
+        </SheetContent>
+      </Sheet>
 
-      <Navbar isBordered>
+      <Navbar isBordered className="w-full fixed top-0 z-50">
         <NavbarContent>
           <NavbarBrand>
             <Button isIconOnly variant="light" onClick={() => setIsSidebarOpen(true)}>
               <Icon icon="lucide:menu" width={24} height={24} />
             </Button>
-            <Link to="/" className="font-bold text-inherit">HeroUI Clone</Link>
+            <Link to="/" className="ml-2 font-bold text-inherit">HeroUI Clone</Link>
           </NavbarBrand>
         </NavbarContent>
 
@@ -49,13 +60,16 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             {user ? (
               <Button color="danger" variant="flat" onClick={logout}>Logout</Button>
             ) : (
-              <Button as={Link} color="primary" href="/login" variant="flat">Login</Button>
+              <Link to="/login">
+                <Button color="primary" variant="flat">Login</Button>
+              </Link>
             )}
           </NavbarItem>
         </NavbarContent>
       </Navbar>
 
-      <main className="flex-grow overflow-auto p-4">
+      {/* Push content below fixed navbar */}
+      <main className="flex-grow overflow-auto pt-16 p-4">
         {children}
       </main>
     </div>
